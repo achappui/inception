@@ -1,0 +1,30 @@
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ${REQUIREMENTS_FOLDER}/nginx
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 443:443
+    volumes:
+      - wordpress_data:/var/www/html:ro
+    networks:
+      - frontend_nw
+
+    secrets:
+      - nginx_server_crt
+      - nginx_server_key
+
+    depends_on:
+      - wordpress
+
+volumes:
+  wordpress_data:
+    external: true
+
+secrets:
+  nginx_server_crt:
+    file: ${SECRETS_FOLDER}/nginx_server_crt.txt
+  nginx_server_key:
+    file: ${SECRETS_FOLDER}/nginx_server_key.txt

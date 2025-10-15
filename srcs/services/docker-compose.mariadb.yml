@@ -1,0 +1,35 @@
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ${REQUIREMENTS_FOLDER}/mariadb
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 3306
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend_nw
+
+    secrets:
+      - mariadb_wordpress_name
+      - mariadb_wordpress_user
+      - mariadb_wordpress_password
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 2s
+      retries: 3
+
+volumes:
+  db_data:
+    external: true
+
+secrets:
+  mariadb_wordpress_name:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_name.txt
+  mariadb_wordpress_user:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_user.txt
+  mariadb_wordpress_password:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_password.txt

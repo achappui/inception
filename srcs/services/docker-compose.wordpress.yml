@@ -1,0 +1,60 @@
+services:
+  wordpress:
+    container_name: wordpress
+    build:
+      context: ${REQUIREMENTS_FOLDER}/wordpress
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 9000
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - frontend_nw
+      - backend_nw
+
+    environment:
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - WEBSITE_TITLE=${WEBSITE_TITLE}
+
+    secrets:
+      - mariadb_wordpress_name
+      - mariadb_wordpress_user
+      - mariadb_wordpress_password
+
+      - wordpress_admin_mail
+      - wordpress_admin_password
+      - wordpress_admin_user
+
+      - wordpress_mail
+      - wordpress_password
+      - wordpress_user
+
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+volumes:
+  wordpress_data:
+    external: true
+
+secrets:
+  mariadb_wordpress_name:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_name.txt
+  mariadb_wordpress_user:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_user.txt
+  mariadb_wordpress_password:
+    file: ${SECRETS_FOLDER}/mariadb_wordpress_password.txt
+  wordpress_admin_mail:
+    file: ${SECRETS_FOLDER}/wordpress_admin_mail.txt
+  wordpress_admin_password:
+    file: ${SECRETS_FOLDER}/wordpress_admin_password.txt
+  wordpress_admin_user:
+    file: ${SECRETS_FOLDER}/wordpress_admin_user.txt
+  wordpress_mail:
+    file: ${SECRETS_FOLDER}/wordpress_mail.txt
+  wordpress_password:
+    file: ${SECRETS_FOLDER}/wordpress_password.txt
+  wordpress_user:
+    file: ${SECRETS_FOLDER}/wordpress_user.txt

@@ -1,0 +1,10 @@
+include:
+  - path: './services/docker-compose.mariadb.yml'
+  - path: './services/docker-compose.wordpress.yml'
+  - path: './services/docker-compose.nginx.yml'
+
+networks:
+  backend_nw:
+    driver: bridge
+  frontend_nw:
+    driver: bridge

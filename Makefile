@@ -1,4 +1,4 @@
-VOLUME_FOLDER		= /home/user/Desktop/inception/srcs/data
+VOLUME_FOLDER		= /home/achappui/data
 
 WP_VOLUME_FOLDER	= $(VOLUME_FOLDER)/wordpress
 DB_VOLUME_FOLDER	= $(VOLUME_FOLDER)/db
@@ -9,9 +9,11 @@ DOCKER_COMPOSE_FILE	= ./srcs/docker-compose.yml
 
 up:
 	if [ ! "$$(docker volume ls -q -f name=^$(WP_VOLUME_NAME)$$)" ]; then \
+		mkdir -p ${WP_VOLUME_FOLDER}; \
 		docker volume create --name $(WP_VOLUME_NAME) --opt type=none --opt device=$(WP_VOLUME_FOLDER) --opt o=bind; \
 	fi
 	if [ ! "$$(docker volume ls -q -f name=^$(DB_VOLUME_NAME)$$)" ]; then \
+		mkdir -p ${DB_VOLUME_FOLDER}; \
 		docker volume create --name $(DB_VOLUME_NAME) --opt type=none --opt device=$(DB_VOLUME_FOLDER) --opt o=bind; \
 	fi
 	docker compose -f $(DOCKER_COMPOSE_FILE) -p "inception" up -d
